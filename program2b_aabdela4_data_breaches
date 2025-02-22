@@ -1,3 +1,14 @@
+/*
+ CS222 #2
+
+ Ahmed Abdel-Aziz
+
+A program that uses scanf within a nested for loop to read each year (row) of data breach counts
+by month (column) into a 2D array from a file.
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -70,3 +81,9 @@ int main() {
 
     return 0;
 }
+
+/*  
+2022: annual data breaches = 3579
+2022: month of max breaches is August
+2022: mean is 298.250 and standard deviation is 230.076
+*/

@@ -8,7 +8,6 @@ by month (column) into a 2D array from a file.
 
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -45,38 +44,29 @@ int main() {
 
     fclose(file);
 
-    // Calculate and display annual totals
+    // Calculate and display annual totals, month with max data breaches, and mean and standard deviations
     for (int year = 0; year < YEARS_OF_DATA; year++) {
         int total_data_breaches = 0;
-        for (int month = 0; month < MONTHS_PER_YEAR; month++) {
-            total_data_breaches += data_breaches[year][month];
-        }
-        printf("%d: annual data breaches = %d\n", 2021 + year, total_data_breaches);
-    }
-
-    // Calculate and display month with max data breaches
-    for (int year = 0; year < YEARS_OF_DATA; year++) {
         int max_breaches = data_breaches[year][0];
         int max_month = 0;
-        for (int month = 1; month < MONTHS_PER_YEAR; month++) {
+        for (int month = 0; month < MONTHS_PER_YEAR; month++) {
+            total_data_breaches += data_breaches[year][month];
             if (data_breaches[year][month] > max_breaches) {
                 max_breaches = data_breaches[year][month];
                 max_month = month;
             }
         }
-        char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-        printf("%d: month of max breaches is %s\n", 2021 + year, months[max_month]);
-    }
-
-    // Calculate and display mean and standard deviations
-    for (int year = 0; year < YEARS_OF_DATA; year++) {
         double mean = calculate_mean(data_breaches[year], MONTHS_PER_YEAR);
         double sum_squared_diffs = 0;
         for (int month = 0; month < MONTHS_PER_YEAR; month++) {
             sum_squared_diffs += pow(data_breaches[year][month] - mean, 2);
         }
         double standard_deviation = sqrt(sum_squared_diffs / MONTHS_PER_YEAR);
+        char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        printf("%d: annual data breaches = %d\n", 2021 + year, total_data_breaches);
+        printf("%d: month of max breaches is %s\n", 2021 + year, months[max_month]);
         printf("%d: mean is %.3f and standard deviation is %.3f\n", 2021 + year, mean, standard_deviation);
+        printf("\n");
     }
 
     return 0;

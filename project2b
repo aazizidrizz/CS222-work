@@ -1,1 +1,57 @@
-add 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define YEARS_OF_DATA 4
+#define MONTHS_PER_YEAR 12
+
+// Function to calculate mean
+double calculateMean(int data[YEARS_OF_DATA][MONTHS_PER_YEAR], int year) {
+    int sum = 0;
+    for (int month = 0; month < MONTHS_PER_YEAR; month++) {
+        sum += data[year][month];
+    }
+    return (double)sum / MONTHS_PER_YEAR;
+}
+
+// Function to calculate standard deviation
+double calculateStandardDeviation(int data[YEARS_OF_DATA][MONTHS_PER_YEAR], int year, double mean) {
+    double sum = 0;
+    for (int month = 0; month < MONTHS_PER_YEAR; month++) {
+        sum += pow(data[year][month] - mean, 2);
+    }
+    return sqrt(sum / MONTHS_PER_YEAR);
+}
+
+int main() {
+    int data[YEARS_OF_DATA][MONTHS_PER_YEAR] = {
+        {179, 161, 193, 217, 300, 268, 201, 170, 133, 156, 164, 245},
+        {259, 126, 174, 143, 214, 351, 531, 973, 258, 197, 219, 134},
+        {202, 128, 250, 285, 467, 534, 376, 537, 1126, 772, 871, 316},
+        {525, 368, 366, 452, 245, 259, 190, 312, 261, 343, 311, 250}
+    };
+
+    for (int year = 0; year < YEARS_OF_DATA; year++) {
+        int sum = 0;
+        int maxMonth = 0;
+        int maxBreaches = 0;
+        for (int month = 0; month < MONTHS_PER_YEAR; month++) {
+            sum += data[year][month];
+            if (data[year][month] > maxBreaches) {
+                maxBreaches = data[year][month];
+                maxMonth = month;
+            }
+        }
+
+        double mean = calculateMean(data, year);
+        double standardDeviation = calculateStandardDeviation(data, year, mean);
+
+        printf("Year %d:\n", year + 2021);
+        printf("Annual data breaches: %d\n", sum);
+        printf("Month of max breaches: %s\n", (maxMonth == 0) ? "January" : (maxMonth == 1) ? "February" : (maxMonth == 2) ? "March" : (maxMonth == 3) ? "April" : (maxMonth == 4) ? "May" : (maxMonth == 5) ? "June" : (maxMonth == 6) ? "July" : (maxMonth == 7) ? "August" : (maxMonth == 8) ? "September" : (maxMonth == 9) ? "October" : (maxMonth == 10) ? "November" : "December");
+        printf("Mean: %.3f\n", mean);
+        printf("Standard deviation: %.3f\n", standardDeviation);
+    }
+
+    return 0;
+}

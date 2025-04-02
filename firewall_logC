@@ -1,0 +1,77 @@
+/* 
+ * CS 222 Programming Assignment #3
+ * Your Name: Ahmed Abdel-Aziz
+ * This file implements functions to read, parse, and print firewall logs.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "firewall_log.h"
+
+// Read each log from the file and store in the logs array.
+int read_firewall_logs(const char *filepath, char logs[][LINE_LEN], int max_logs) {
+    FILE *fp = fopen(filepath, "r");
+    if (!fp) {
+        perror("Error opening file");
+        return -1;
+    }
+    
+    int count = 0;
+    while (fgets(logs[count], LINE_LEN, fp) != NULL && count < max_logs) {
+        // Remove the newline at the end
+        size_t len = strlen(logs[count]);
+        if (len > 0 && logs[count][len - 1] == '\n') {
+            logs[count][len - 1] = '\0';
+        }
+        count++;
+    }
+    fclose(fp);
+    return count;
+}
+
+int parse_firewall_log(const char *log_line, firewall_log_t *log_entry) {
+    int numParsed = sscanf(log_line,
+        "{'event.start': '%79[^']','destination.ip': '%79[^']','destination.host': '%79[^']',"
+        "'source.ip': '%79[^']','source.host': '%79[^']','client.bytes': '%d','server.bytes': '%d',"
+        "'http.request.time': '%d','http.response.time': '%d','user.name': '%79[^']',"
+        "'event.outcome': '%79[^']','event.type': '%79[^']','event.category': '%79[^']','event.action': '%79[^']'}",
+        log_entry->event_start,
+        log_entry->destination_ip,
+        log_entry->destination_host,
+        log_entry->source_ip,
+        log_entry->source_host,
+        &log_entry->client_bytes,
+        &log_entry->server_bytes,
+        &log_entry->http_request_time,
+        &log_entry->http_response_time,
+        log_entry->user_name,
+        log_entry->event_outcome,
+        log_entry->event_type,
+        log_entry->event_category,
+        log_entry->event_action);
+    
+    // Check if all 14 pieces were read
+    if (numParsed != 14) {
+        fprintf(stderr, "Parsing error: expected 14 fields but got %d\n", numParsed);
+        return -1;
+    }
+    return 0;
+}
+
+void print_firewall_log(const firewall_log_t *log_entry) {
+    printf("event.start       = %s\n", log_entry->event_start);
+    printf("destination.ip    = %s\n", log_entry->destination_ip);
+    printf("destination.host  = %s\n", log_entry->destination_host);
+    printf("source.ip         = %s\n", log_entry->source_ip);
+    printf("source.host       = %s\n", log_entry->source_host);
+    printf("client.bytes      = %d\n", log_entry->client_bytes);
+    printf("server.bytes      = %d\n", log_entry->server_bytes);
+    printf("http.request.time = %d\n", log_entry->http_request_time);
+    printf("http.response.time= %d\n", log_entry->http_response_time);
+    printf("user.name         = %s\n", log_entry->user_name);
+    printf("event.outcome     = %s\n", log_entry->event_outcome);
+    printf("event.type        = %s\n", log_entry->event_type);
+    printf("event.category    = %s\n", log_entry->event_category);
+    printf("event.action      = %s\n", log_entry->event_action);
+}
